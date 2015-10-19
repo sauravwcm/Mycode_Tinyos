@@ -1,8 +1,8 @@
 #include "WiTemp.h"
 
 #define REF 30
-#define KP  5
-#define KI  15
+#define KP  10
+#define KI  20
 #define DT  0.1
 module ControllerC
 {
