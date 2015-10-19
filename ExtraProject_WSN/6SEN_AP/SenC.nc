@@ -1,7 +1,8 @@
 #include "WiTemp.h"
 
-#define sigma 0.01
+#define SIGMA 0.00001
 
+//#define PERIODIC 
 
 module SenC
 {
@@ -40,6 +41,7 @@ implementation
 
 	event void Boot.booted()
 	{
+		
 		call RadioControl.start();
 		call SerialControl.start();
 	}
@@ -67,15 +69,14 @@ implementation
   	{
 
 	    call Leds.led0Toggle();
-	    
 	    e = (uint16_t)byte - ser_byte ;
 
 	    if (e<0)
 		{
 			e= -e;
 		}
-
-	  	if ( e >= (float)(sigma*ser_byte))
+		#ifndef PERIODIC
+	  	if ( e >= (float)(SIGMA*ser_byte))
 	    {
 			if(radioBusy==FALSE)
 		    {
@@ -93,6 +94,23 @@ implementation
 		        }
 		    }
 	    }
+	    #else
+	    	if(radioBusy==FALSE)
+		    {
+		        //creating packet
+		        WsnMsg_t* msg= call RadioPacket.getPayload(& packet, sizeof(WsnMsg_t));
+		        msg -> NodeID= TOS_NODE_ID;
+		        msg -> Data = (uint16_t)byte;
+
+		        //sending the packet
+		        if(call AMSend.send(1, & packet, sizeof(WsnMsg_t))==SUCCESS)
+		        {
+		            radioBusy=TRUE;
+		            call Leds.led2Toggle();
+		            //call UartByte.send(msg -> Data);
+		        }
+		    }
+	    #endif
 	    ser_byte = (uint16_t)byte;	
   	}
 

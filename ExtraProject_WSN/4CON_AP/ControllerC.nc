@@ -1,6 +1,9 @@
 #include "WiTemp.h"
 
 #define REF 30
+#define KP  5
+#define KI  15
+#define DT  0.1
 module ControllerC
 {
 	uses
@@ -27,11 +30,11 @@ implementation
 	bool radioBusy= FALSE;
 	//uint8_t  sendVal=0;			//controller OP (u)
 	uint16_t sendVal=0;
-	uint16_t  ref = REF,kp = 5;
+	uint16_t  ref = REF,kp = KP;
 	int16_t   err= REF;
 	//uint16_t data=0 ;		//received from sensor mote
-	uint16_t  ki=15;
-	float 	integral=0,dt = 0.1;	// equal to sampling time
+	uint16_t  ki = KI;
+	float 	integral=0,dt = DT;	// equal to sampling time
 
 	message_t packet;
 

@@ -1,11 +1,11 @@
 <tos_image>
   <ident>
-    <uidhash>6C8DC216L</uidhash>
+    <uidhash>CC4D2376L</uidhash>
     <hostname>SAURAVs-MacBook</hostname>
     <username>sauravpaul</username>
     <appname>ControllerAppC</appname>
     <userhash>443511ECL</userhash>
-    <timestamp>5624AE64L</timestamp>
+    <timestamp>5624BF5DL</timestamp>
     <deluge_support>no</deluge_support>
     <platform>telosb</platform>
   </ident>

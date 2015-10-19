@@ -4313,8 +4313,8 @@ Disassembly of section .text:
     70ec:	0e 47       	mov	r7,	r14	
     70ee:	0f 43       	clr	r15		
     70f0:	b0 12 c2 77 	call	#0x77c2	
-    70f4:	3c 40 0a d7 	mov	#-10486,r12	;#0xd70a
-    70f8:	3d 40 23 3c 	mov	#15395,	r13	;#0x3c23
+    70f4:	3c 40 ac c5 	mov	#-14932,r12	;#0xc5ac
+    70f8:	3d 40 27 37 	mov	#14119,	r13	;#0x3727
     70fc:	b0 12 f0 74 	call	#0x74f0	
     7100:	0c 4e       	mov	r14,	r12	
     7102:	0d 4f       	mov	r15,	r13	
