@@ -417,7 +417,7 @@
 0000571c t TransformAlarmC__1__Counter__get
 00005798 t TransformAlarmC__1__set_alarm
 0000588e t ActuatorP__UartByte__send
-000058d8 t ActuatorP__Leds__led2Toggle
+000058d8 t ActuatorP__failBlink
 000058e8 t VirtualizeTimerC__0__fireTimers
 000059c4 t Msp430UartP__0__ResourceConfigure__configure.constprop.171
 00005aac t StateImplP__State__requestState.constprop.173

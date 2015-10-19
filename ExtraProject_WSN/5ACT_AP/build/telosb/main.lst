@@ -2271,9 +2271,9 @@ Disassembly of section .text:
     58d4:	3b 41       	pop	r11		
     58d6:	30 41       	ret			
 
-000058d8 <ActuatorP__Leds__led2Toggle>:
+000058d8 <ActuatorP__failBlink>:
     58d8:	b0 12 c8 49 	call	#0x49c8	
-    58dc:	f2 e0 40 00 31 00 	xor.b	#64,	&0x0031	;#0x0040
+    58dc:	f2 e0 10 00 31 00 	xor.b	#16,	&0x0031	;#0x0010
     58e2:	b0 12 da 49 	call	#0x49da	
     58e6:	30 41       	ret			
 
@@ -2345,7 +2345,7 @@ Disassembly of section .text:
     599a:	b0 12 8e 58 	call	#0x588e	
     599e:	5f 42 1d 11 	mov.b	&0x111d,r15	
     59a2:	b0 12 8e 58 	call	#0x588e	
-    59a6:	4f 93       	tst.b	r15		
+    59a6:	5f 93       	cmp.b	#1,	r15	;r3 As==01
     59a8:	02 20       	jnz	$+6      	;abs 0x59ae
     59aa:	b0 12 d8 58 	call	#0x58d8	
     59ae:	7f 40 0b 00 	mov.b	#11,	r15	;#0x000b

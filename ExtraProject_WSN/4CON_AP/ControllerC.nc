@@ -30,15 +30,15 @@ implementation
 	uint16_t  ref = REF,kp = 5;
 	int16_t   err= REF;
 	//uint16_t data=0 ;		//received from sensor mote
-	uint16_t integral=0, ki=15;
-	float 	dt = 0.1;	// equal to sampling time
+	uint16_t  ki=15;
+	float 	integral=0,dt = 0.1;	// equal to sampling time
 
 	message_t packet;
 
 	event void Boot.booted()
 	{
 		//call Timer.startPeriodic(100);
-		call Leds.led1On();
+		
 		call AMControl.start();
 		call SerialControl.start();
 
@@ -46,37 +46,8 @@ implementation
 
 	event void Timer.fired()
 	{
-		call Leds.led1Off();
-		call Leds.led2Toggle();
         	
-        /*integral = (uint16_t)(integral + (err * dt)) ;	
-        sendVal = (kp * err) + (ki * integral);
-       
-        //controller OP calculated	
-
-            if(radioBusy==FALSE)
-            {
-                //creating packet
-                WsnMsg_t* msg= call Packet.getPayload(& packet, sizeof(WsnMsg_t));
-                msg -> NodeID= TOS_NODE_ID;
-                msg -> Data = sendVal;
-				//msg -> Data = data;
-                //sending the packet
-                if(call AMSend.send(2, & packet, sizeof(WsnMsg_t))==SUCCESS)
-                {
-                    radioBusy=TRUE;
-                }
-            }
-		
-            else
-            {
-		 	call Leds.led0Toggle();
-            }
-		*/
-	
 	}
-
-	
 
 	event void AMSend.sendDone(message_t *msg, error_t error)
 	{
@@ -88,11 +59,7 @@ implementation
 
 	event void AMControl.startDone(error_t error)
 	{
-		if(error==SUCCESS)
-		{
-			//call Leds.led0On();
-		}
-		else
+		if(error==FAIL)
 		{
 			call AMControl.start();
 		}
@@ -103,12 +70,11 @@ implementation
 		if(len == sizeof(WsnMsg_t))
 		{
 			WsnMsg_t * incomingPacket = (WsnMsg_t*) payload;
-			uint16_t data = incomingPacket -> Data ;
+			uint16_t data ;
 
-			//sendVal = incomingPacket -> Data ;
 			if(incomingPacket ->NodeID == 3)
 			{
-				//data = incomingPacket -> Data ;
+				data = incomingPacket -> Data ;
 				call Leds.led1Toggle();
 				//call UartByte.send(data);		//serially send the value received from SEN (for checking)
 
@@ -116,7 +82,7 @@ implementation
 
 				//calculate controller OP
 			
-				integral = (uint16_t)(integral + (err * dt)) ;	
+				integral = (integral + (float)(err * dt)) ;	
         		sendVal = (kp * err) + (ki * integral);
        
         		//controller OP calculated	
@@ -127,7 +93,7 @@ implementation
                 	WsnMsg_t* msg= call Packet.getPayload(& packet, sizeof(WsnMsg_t));
                 	msg -> NodeID= TOS_NODE_ID;
                 	msg -> Data = sendVal;
-					//msg -> Data = data;
+					
                 	//sending the packet
                 	if(call AMSend.send(2, & packet, sizeof(WsnMsg_t))==SUCCESS)
                 	{
@@ -137,12 +103,7 @@ implementation
             	}
 				
 					
-			}	
-			else
-			{
-				call Leds.led1Off();
-			}
-				
+			}			
 		}
 		return msg;
 	}
