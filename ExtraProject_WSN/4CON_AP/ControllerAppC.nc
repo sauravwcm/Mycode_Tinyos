@@ -7,12 +7,14 @@ implementation
 	components ControllerC as App;
 	components MainC;
 	components LedsC;
+	components UserButtonC;
 	components new TimerMilliC();
 	components PlatformSerialC;
 	
 	App.Boot -> MainC;
 	App.Leds -> LedsC;
 	App.Timer -> TimerMilliC;
+	App.Notify -> UserButtonC;
 	
 	//for temperature sensor
 	//components new SensirionSht11C() as TempSensor;

@@ -1,8 +1,8 @@
 #include "WiTemp.h"
-
+#include <UserButton.h>
 #define SIGMA 0.00001
 
-//#define PERIODIC 
+#define PERIODIC 
 
 module SenC
 {
@@ -12,7 +12,8 @@ module SenC
 		interface Boot;
 		interface Leds;
 		interface Timer<TMilli>;
-		
+		interface Notify<button_state_t>;
+
 		interface SplitControl as SerialControl;
     	interface SplitControl as RadioControl;
 		
@@ -34,18 +35,32 @@ implementation
 	uint8_t  sendVal=0, count=0;
 	message_t packet;
 	//uint8_t serial_data,timeout=0xff;
-	uint16_t ser_byte=0;
+	uint16_t ser_byte=0, packet_count=0;
 	int16_t e=0;
   	uint16_t length=1;
 	
 
 	event void Boot.booted()
 	{
-		
+		call Notify.enable();
 		call RadioControl.start();
 		call SerialControl.start();
 	}
 
+	event void Notify.notify(button_state_t state)
+  	{
+	    if (state == BUTTON_PRESSED)
+	    {
+	      call Leds.led1On();
+	      call UartByte.send(0xff & (packet_count>>8));
+	      call UartByte.send(0xff & packet_count);
+	      call UartByte.send('\n');
+	    }
+	    else if (state == BUTTON_RELEASED)
+	    {
+	      call Leds.led1Off();
+	    }
+  	}
 	event void SerialControl.startDone(error_t error) 
 	{
 		if (error==SUCCESS)
@@ -90,6 +105,7 @@ implementation
 		        {
 		            radioBusy=TRUE;
 		            call Leds.led2Toggle();
+		            packet_count++;
 		            //call UartByte.send(msg -> Data);
 		        }
 		    }
@@ -107,6 +123,7 @@ implementation
 		        {
 		            radioBusy=TRUE;
 		            call Leds.led2Toggle();
+		            packet_count++;
 		            //call UartByte.send(msg -> Data);
 		        }
 		    }
