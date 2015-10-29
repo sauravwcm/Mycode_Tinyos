@@ -1,0 +1,2 @@
+make clean
+make telosb install,3 bsl,/dev/tty.usbserial-FTWGRWD8
