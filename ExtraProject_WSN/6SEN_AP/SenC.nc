@@ -2,7 +2,7 @@
 #include <UserButton.h>
 #define SIGMA 0.00001
 
-#define PERIODIC 
+//#define PERIODIC 
 
 module SenC
 {
@@ -35,10 +35,11 @@ implementation
 	uint8_t  sendVal=0, count=0;
 	message_t packet;
 	//uint8_t serial_data,timeout=0xff;
-	uint16_t ser_byte=0, packet_count=0;
+	uint16_t ser_byte=0, packet_count=0, send_byte;
 	int16_t e=0;
   	uint16_t length=1;
 	
+  	task void radioSendToCon();
 
 	event void Boot.booted()
 	{
@@ -95,40 +96,40 @@ implementation
 	    {
 			if(radioBusy==FALSE)
 		    {
-		        //creating packet
-		        WsnMsg_t* msg= call RadioPacket.getPayload(& packet, sizeof(WsnMsg_t));
-		        msg -> NodeID= TOS_NODE_ID;
-		        msg -> Data = (uint16_t)byte;
-
-		        //sending the packet
-		        if(call AMSend.send(1, & packet, sizeof(WsnMsg_t))==SUCCESS)
-		        {
-		            radioBusy=TRUE;
-		            call Leds.led2Toggle();
-		            packet_count++;
-		            //call UartByte.send(msg -> Data);
-		        }
+		    	send_byte = (uint16_t)byte;
+		    	post radioSendToCon();
+		    	radioBusy=TRUE;
 		    }
 	    }
 	    #else
 	    	if(radioBusy==FALSE)
 		    {
-		        //creating packet
-		        WsnMsg_t* msg= call RadioPacket.getPayload(& packet, sizeof(WsnMsg_t));
-		        msg -> NodeID= TOS_NODE_ID;
-		        msg -> Data = (uint16_t)byte;
-
-		        //sending the packet
-		        if(call AMSend.send(1, & packet, sizeof(WsnMsg_t))==SUCCESS)
-		        {
-		            radioBusy=TRUE;
-		            call Leds.led2Toggle();
-		            packet_count++;
-		            //call UartByte.send(msg -> Data);
-		        }
+		    	send_byte = (uint16_t)byte;
+		    	post radioSendToCon();
+		    	radioBusy=TRUE;
 		    }
 	    #endif
 	    ser_byte = (uint16_t)byte;	
+  	}
+
+  	task void radioSendToCon()
+  	{
+  		//creating packet
+        WsnMsg_t* msg= call RadioPacket.getPayload(& packet, sizeof(WsnMsg_t));
+        msg -> NodeID= TOS_NODE_ID;
+        msg -> Data = send_byte;
+
+        //sending the packet
+        if(call AMSend.send(1, & packet, sizeof(WsnMsg_t))==SUCCESS)
+        {
+            //radioBusy=TRUE;
+            call Leds.led2Toggle();
+            packet_count++;
+        }
+        else
+        {
+        	post radioSendToCon();
+        }
   	}
 
 	async event void UartStream.receiveDone(uint8_t *buf, uint16_t len, error_t error)
